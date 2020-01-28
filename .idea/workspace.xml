@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="" />
+    <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fingerprint.PNG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.MD" beforeDir="false" afterPath="$PROJECT_DIR$/readme.MD" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sample/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sample/sample.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/sample.fxml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,8 +63,12 @@
       <setting name="OPEN_NEW_TAB" value="false" />
     </FindUsagesManager>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectId" id="1WoYkGkfUPoUSnFXpag2pnyHacJ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectReloadState">
     <option name="STATE" value="0" />
   </component>
@@ -74,9 +85,10 @@
     <property name="MemberChooser.showClasses" value="true" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="OverrideImplement.combined" value="false" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="dynamic.classpath" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../libraries/ZKFingerReader.jar!/" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -205,29 +217,29 @@
       <screen x="0" y="0" width="1366" height="768" />
     </state>
     <state x="626" y="139" key="FileChooserDialogImpl/0.0.1366.768@0.0.1366.768" timestamp="1579818463491" />
-    <state width="1306" height="140" key="GridCell.Tab.0.bottom" timestamp="1579825122732">
+    <state width="1286" height="38" key="GridCell.Tab.0.bottom" timestamp="1580220386783">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1306" height="140" key="GridCell.Tab.0.bottom/0.0.1366.768@0.0.1366.768" timestamp="1579825122732" />
-    <state width="1306" height="140" key="GridCell.Tab.0.center" timestamp="1579825122732">
+    <state width="1286" height="38" key="GridCell.Tab.0.bottom/0.0.1366.768@0.0.1366.768" timestamp="1580220386783" />
+    <state width="1286" height="38" key="GridCell.Tab.0.center" timestamp="1580220386782">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1306" height="140" key="GridCell.Tab.0.center/0.0.1366.768@0.0.1366.768" timestamp="1579825122732" />
-    <state width="1306" height="140" key="GridCell.Tab.0.left" timestamp="1579825122732">
+    <state width="1286" height="38" key="GridCell.Tab.0.center/0.0.1366.768@0.0.1366.768" timestamp="1580220386782" />
+    <state width="1286" height="38" key="GridCell.Tab.0.left" timestamp="1580220386782">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1306" height="140" key="GridCell.Tab.0.left/0.0.1366.768@0.0.1366.768" timestamp="1579825122732" />
-    <state width="1306" height="140" key="GridCell.Tab.0.right" timestamp="1579825122732">
+    <state width="1286" height="38" key="GridCell.Tab.0.left/0.0.1366.768@0.0.1366.768" timestamp="1580220386782" />
+    <state width="1286" height="38" key="GridCell.Tab.0.right" timestamp="1580220386783">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1306" height="140" key="GridCell.Tab.0.right/0.0.1366.768@0.0.1366.768" timestamp="1579825122732" />
+    <state width="1286" height="38" key="GridCell.Tab.0.right/0.0.1366.768@0.0.1366.768" timestamp="1580220386783" />
     <state x="326" y="0" key="SettingsEditor" timestamp="1579818467890">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
     <state x="326" y="0" key="SettingsEditor/0.0.1366.768@0.0.1366.768" timestamp="1579818467890" />
-    <state x="378" y="216" key="com.intellij.ide.util.TipDialog" timestamp="1579824697199">
+    <state x="378" y="216" key="com.intellij.ide.util.TipDialog" timestamp="1580211543905">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state x="378" y="216" key="com.intellij.ide.util.TipDialog/0.0.1366.768@0.0.1366.768" timestamp="1579824697199" />
+    <state x="378" y="216" key="com.intellij.ide.util.TipDialog/0.0.1366.768@0.0.1366.768" timestamp="1580211543905" />
   </component>
 </project>

@@ -9,6 +9,8 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -17,41 +19,50 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     @FXML
-    Button openBtn;
-    @FXML
-    Button startCaptureBtn;
-    @FXML
-    Button stopBtn;
-    @FXML
     ImageView imageView;
+    @FXML
+    ImageView image1;
+    @FXML
+    ImageView image2;
+    @FXML
+    TextField nameField;
+    @FXML
+    ImageView veryImageView;
+    @FXML
+    Label nameLabel;
+
+
 
     //the width of fingerprint image
-    int fpWidth = 0;
+    private int fpWidth = 0;
     //the height of fingerprint image
-    int fpHeight = 0;
-    byte[] imgbuf;
-    byte[] template = new byte[2048];
-    int[] templateLen = new int[1];
-    long mhDB = 0;
-    long device = 0;
-    byte[] paramValue = new byte[4];
-    int[] size = new int[1];
-    int nFmt = 0;
-    boolean bRegister = false;
-    int enroll_idx = 0;
-    byte[][] regtemparray = new byte[3][2048];
-    int iFid = 1;
-    int cbRegTemp = 0;
-    byte[] lastRegTemp = new byte[2048];
-    boolean bIdentify = true;
+    private int fpHeight = 0;
+    private byte[] imgbuf;
+    private byte[] template = new byte[2048];
+    private int[] templateLen = new int[1];
+    private long mhDB = 0;
+    private long device = 0;
+    private byte[] paramValue = new byte[4];
+    private int[] size = new int[1];
 
-    boolean Running = true;
+    private boolean Running = true;
 
     IntegerProperty scannerProperty = new SimpleIntegerProperty();
+
+    private int count = 1;
+
+    private String fingerPrintTemplateForDB1 = "";
+    private String fingerPrintTemplateForDB2 = "";
+
+    Map<Integer, PersonInfo> map =  new HashMap<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -60,11 +71,12 @@ public class Controller implements Initializable {
                 OnCaptureOK(imgbuf);
             }
         });
+        initFingerPrint();
+        fetchDataFromDB();
 
     }
 
-
-    public void onOpen() {
+    private void initFingerPrint(){
         System.out.println("Init: " + FingerprintSensorEx.Init());
 
         device = FingerprintSensorEx.OpenDevice(0);
@@ -81,9 +93,124 @@ public class Controller implements Initializable {
 
         mhDB = FingerprintSensorEx.DBInit();
 
+        int nFmt = 0;
         FingerprintSensorEx.DBSetParameter(mhDB, 5010, nFmt);
 
         Running = true;
+    }
+
+    private void fetchDataFromDB(){
+        String sql = "select * from fingerprintinfo";
+
+        try (Connection connection =  connectToDatabase();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet rs = preparedStatement.executeQuery();
+
+            int fid = 1;
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String temp1 = rs.getString("temp1");
+                String temp2 = rs.getString("temp2");
+
+                PersonInfo person = new PersonInfo(id, name);
+
+                byte[] finger1 = new byte[2048];
+                byte[] finger2 = new byte[2048];
+                FingerprintSensorEx.Base64ToBlob(temp1, finger1, 2048);
+                FingerprintSensorEx.Base64ToBlob(temp2, finger2, 2048);
+
+                System.out.println(  FingerprintSensorEx.DBAdd(mhDB, fid, finger1));
+                map.put(fid, person);
+                ++fid;
+                System.out.println(FingerprintSensorEx.DBAdd(mhDB, fid, finger2));
+                map.put(fid, person);
+                ++fid;
+            }
+
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+    }
+
+    public void onVerify(){
+        int[] fid = new int[1];
+        int[] score = new int[1];
+        System.out.println("Identify: " + FingerprintSensorEx.DBIdentify(mhDB, template,fid, score));
+
+        if (fid[0] != 0 && score[0] > 70){
+            PersonInfo personInfo = map.get(fid[0]);
+
+            if (personInfo != null){
+                nameLabel.setText("Your name is " + personInfo.name);
+            }
+        }
+    }
+
+
+    public void onAccept(){
+        if (count == 1){
+            image1.setImage(imageView.getImage());
+            fingerPrintTemplateForDB1 = FingerprintSensorEx.BlobToBase64(template, templateLen[0]);
+            ++count;
+        }else
+        if (count == 2){
+            image2.setImage(imageView.getImage());
+            fingerPrintTemplateForDB2 = FingerprintSensorEx.BlobToBase64(template, templateLen[0]);
+            count = 1;
+        }
+    }
+
+    public void onSubmit(){
+        String sql = "insert into fingerprintinfo (`Name`, `temp1`, `temp2`) values(?,?,?)";
+
+        try (Connection connection = connectToDatabase();
+             // Step 2:Create a statement using connection object
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, nameField.getText());
+            preparedStatement.setString(2, fingerPrintTemplateForDB1);
+            preparedStatement.setString(3, fingerPrintTemplateForDB2);
+
+
+            System.out.println(preparedStatement);
+            // Step 3: Execute the query or update query
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+
+            // print SQL exception information
+            printSQLException(e);
+        }
+    }
+
+    private   Connection connectToDatabase() throws SQLException {
+        String DatabaseUser = "root";
+        String DatabasePassword = "";
+        String DatabaseUrl = "jdbc:mysql://localhost:3306/fingerprint_test?useSSL=true";
+        return DriverManager
+                .getConnection(DatabaseUrl, DatabaseUser, DatabasePassword);
+    }
+
+    private   void printSQLException(SQLException ex) {
+        for (Throwable e: ex) {
+            if (e instanceof SQLException) {
+                e.printStackTrace(System.err);
+                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
+                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+                System.err.println("Message: " + e.getMessage());
+
+                Throwable t = ex.getCause();
+
+                while (t != null) {
+                    System.out.println("Cause: " + t);
+                    t = t.getCause();
+                }
+            }
+        }
+    }
+
+    public void onOpen() {
+        initFingerPrint();
     }
 
     public void onStop() {
@@ -136,6 +263,7 @@ public class Controller implements Initializable {
 
             Image image = SwingFXUtils.toFXImage(bufferedImage, null);
             imageView.setImage(image);
+            veryImageView.setImage(image);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -147,7 +275,7 @@ public class Controller implements Initializable {
     }
 
 
-    public static void writeBitmap(byte[] imageBuf, int nWidth, int nHeight,
+    private static void writeBitmap(byte[] imageBuf, int nWidth, int nHeight,
                                    String path) throws IOException {
         java.io.FileOutputStream fos = new java.io.FileOutputStream(path);
         java.io.DataOutputStream dos = new java.io.DataOutputStream(fos);
@@ -211,7 +339,7 @@ public class Controller implements Initializable {
         fos.close();
     }
 
-    public static byte[] intToByteArray(final int number) {
+    private static byte[] intToByteArray(final int number) {
         byte[] abyte = new byte[4];
 
         abyte[0] = (byte) (0xff & number);
@@ -222,7 +350,7 @@ public class Controller implements Initializable {
         return abyte;
     }
 
-    public void FreeSensor() {
+    private void FreeSensor() {
         try {        //wait for thread stopping
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -240,70 +368,17 @@ public class Controller implements Initializable {
         FingerprintSensorEx.Terminate();
     }
 
-    public static byte[] changeByte(int data) {
+    private static byte[] changeByte(int data) {
         return intToByteArray(data);
     }
 
+    private static class PersonInfo{
+        int id;
+        String name;
 
-    private void OnExtractOK(byte[] template, int len) {
-        if (bRegister) {
-            int[] fid = new int[1];
-            int[] score = new int[1];
-            int ret = FingerprintSensorEx.DBIdentify(mhDB, template, fid, score);
-            if (ret == 0) {
-//                textArea.setText("the finger already enroll by " + fid[0] + ",cancel enroll\n");
-                bRegister = false;
-                enroll_idx = 0;
-                return;
-            }
-            if (enroll_idx > 0 && FingerprintSensorEx.DBMatch(mhDB, regtemparray[enroll_idx - 1], template) <= 0) {
-//                textArea.setText("please press the same finger 3 times for the enrollment\n");
-                return;
-            }
-            System.arraycopy(template, 0, regtemparray[enroll_idx], 0, 2048);
-            enroll_idx++;
-            if (enroll_idx == 3) {
-                int[] _retLen = new int[1];
-                _retLen[0] = 2048;
-                byte[] regTemp = new byte[_retLen[0]];
-
-                if (0 == (ret = FingerprintSensorEx.DBMerge(mhDB, regtemparray[0], regtemparray[1], regtemparray[2], regTemp, _retLen)) &&
-                        0 == (ret = FingerprintSensorEx.DBAdd(mhDB, iFid, regTemp))) {
-                    iFid++;
-                    cbRegTemp = _retLen[0];
-                    System.arraycopy(regTemp, 0, lastRegTemp, 0, cbRegTemp);
-                    //Base64 Template
-//                    textArea.setText("enroll succ:\n");
-                } else {
-//                    textArea.setText("enroll fail, error code=" + ret + "\n");
-                }
-                bRegister = false;
-            } else {
-//                textArea.setText("You need to press the " + (3 - enroll_idx) + " times fingerprint\n");
-            }
-        } else {
-            if (bIdentify) {
-                int[] fid = new int[1];
-                int[] score = new int[1];
-                int ret = FingerprintSensorEx.DBIdentify(mhDB, template, fid, score);
-                if (ret == 0) {
-//                    textArea.setText("Identify succ, fid=" + fid[0] + ",score=" + score[0] +"\n");
-                } else {
-//                    textArea.setText("Identify fail, errcode=" + ret + "\n");
-                }
-
-            } else {
-                if (cbRegTemp <= 0) {
-//                    textArea.setText("Please register first!\n");
-                } else {
-                    int ret = FingerprintSensorEx.DBMatch(mhDB, lastRegTemp, template);
-                    if (ret > 0) {
-//                        textArea.setText("Verify succ, score=" + ret + "\n");
-                    } else {
-//                        textArea.setText("Verify fail, ret=" + ret + "\n");
-                    }
-                }
-            }
+        PersonInfo(int id, String name){
+            this.id = id;
+            this.name = name;
         }
     }
 

@@ -1,14 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <Button fx:id="openBtn" layoutX="58.0" layoutY="59.0" mnemonicParsing="false" onAction="#onOpen" text="Open" />
-      <Button fx:id="stopBtn" layoutX="58.0" layoutY="161.0" mnemonicParsing="false" onAction="#onStop" text="Stop" />
-      <Button fx:id="startCaptureBtn" layoutX="58.0" layoutY="255.0" mnemonicParsing="false" onAction="#onStart" text="Start" />
-      <ImageView fx:id="imageView" fitHeight="298.0" fitWidth="263.0" layoutX="313.0" layoutY="24.0" pickOnBounds="true" />
+      <TabPane layoutX="85.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab text="Register">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox layoutX="373.0" layoutY="36.0" style="-fx-border-color: green;">
+                           <children>
+                              <ImageView fx:id="imageView" fitHeight="302.0" fitWidth="213.0" pickOnBounds="true" />
+                           </children>
+                        </VBox>
+                        <VBox layoutX="134.0" layoutY="14.0" style="-fx-border-color: blue;">
+                           <children>
+                              <ImageView fx:id="image1" fitHeight="97.0" fitWidth="105.0" pickOnBounds="true" />
+                           </children>
+                        </VBox>
+                        <VBox layoutX="245.0" layoutY="14.0" style="-fx-border-color: blue;">
+                           <children>
+                              <ImageView fx:id="image2" fitHeight="97.0" fitWidth="105.0" pickOnBounds="true" />
+                           </children>
+                        </VBox>
+                        <Button layoutX="55.0" layoutY="173.0" mnemonicParsing="false" onAction="#onOpen" text="open" />
+                        <Button layoutX="55.0" layoutY="216.0" mnemonicParsing="false" onAction="#onStart" text="start" />
+                        <Button layoutX="54.0" layoutY="254.0" mnemonicParsing="false" onAction="#onStop" text="stop" />
+                        <Button layoutX="142.0" layoutY="173.0" mnemonicParsing="false" onAction="#onAccept" text="accept" />
+                        <Button layoutX="213.0" layoutY="326.0" mnemonicParsing="false" onAction="#onSubmit" text="Submit" />
+                        <TextField fx:id="nameField" layoutX="167.0" layoutY="128.0" promptText="Name" />
+                        <Label layoutX="445.0" layoutY="14.0" text="Camera Feed" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Verify">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="nameLabel" layoutX="112.0" layoutY="14.0" text="Your Name Will Appear Here" textFill="#2818dd">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <Button layoutX="253.0" layoutY="153.0" mnemonicParsing="false" onAction="#onVerify" prefHeight="73.0" prefWidth="95.0" text="Verify" />
+                        <VBox layoutX="380.0" layoutY="68.0" prefHeight="235.0" prefWidth="189.0" style="-fx-border-color: green;">
+                           <children>
+                              <ImageView fx:id="veryImageView" fitHeight="241.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <Button layoutX="36.0" layoutY="109.0" mnemonicParsing="false" onAction="#onOpen" text="open" />
+                        <Button layoutX="38.0" layoutY="153.0" mnemonicParsing="false" onAction="#onStart" text="start" />
+                        <Button layoutX="38.0" layoutY="190.0" mnemonicParsing="false" onAction="#onStop" text="stop" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
    </children>
 </AnchorPane>
