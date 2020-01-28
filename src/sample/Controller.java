@@ -8,7 +8,6 @@ import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -20,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -121,10 +119,10 @@ public class Controller implements Initializable {
                 FingerprintSensorEx.Base64ToBlob(temp1, finger1, 2048);
                 FingerprintSensorEx.Base64ToBlob(temp2, finger2, 2048);
 
-                System.out.println(  FingerprintSensorEx.DBAdd(mhDB, fid, finger1));
+                System.out.println("DBAdd: "+FingerprintSensorEx.DBAdd(mhDB, fid, finger1));
                 map.put(fid, person);
                 ++fid;
-                System.out.println(FingerprintSensorEx.DBAdd(mhDB, fid, finger2));
+                System.out.println("DBAdd: "+FingerprintSensorEx.DBAdd(mhDB, fid, finger2));
                 map.put(fid, person);
                 ++fid;
             }
@@ -218,8 +216,6 @@ public class Controller implements Initializable {
     }
 
     public void onStart() {
-
-
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -247,7 +243,6 @@ public class Controller implements Initializable {
 
     public int byteArrayToInt(byte[] bytes) {
         int number = bytes[0] & 0xFF;
-        // "|="按位或赋值。
         number |= ((bytes[1] << 8) & 0xFF00);
         number |= ((bytes[2] << 16) & 0xFF0000);
         number |= ((bytes[3] << 24) & 0xFF000000);
@@ -257,7 +252,7 @@ public class Controller implements Initializable {
     private void OnCaptureOK(byte[] imgBuf) {
         File file = null;
         try {
-            writeBitmap(imgBuf, fpWidth, fpHeight, "fingerprint.bmp");
+            writeBitmap(imgBuf, fpWidth, fpHeight);
             file = new File("fingerprint.bmp");
             BufferedImage bufferedImage = ImageIO.read(file);
 
@@ -265,7 +260,6 @@ public class Controller implements Initializable {
             imageView.setImage(image);
             veryImageView.setImage(image);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }finally {
             if (file != null){
@@ -275,9 +269,8 @@ public class Controller implements Initializable {
     }
 
 
-    private static void writeBitmap(byte[] imageBuf, int nWidth, int nHeight,
-                                   String path) throws IOException {
-        java.io.FileOutputStream fos = new java.io.FileOutputStream(path);
+    private static void writeBitmap(byte[] imageBuf, int nWidth, int nHeight) throws IOException {
+        java.io.FileOutputStream fos = new java.io.FileOutputStream("fingerprint.bmp");
         java.io.DataOutputStream dos = new java.io.DataOutputStream(fos);
 
         int w = (((nWidth + 3) / 4) * 4);
@@ -294,8 +287,6 @@ public class Controller implements Initializable {
         dos.write(changeByte(bfOffBits), 0, 4);
 
         int biSize = 40;
-        int biWidth = nWidth;
-        int biHeight = nHeight;
         int biPlanes = 1;
         int biBitcount = 8;
         int biCompression = 0;
@@ -306,8 +297,8 @@ public class Controller implements Initializable {
         int biClrImportant = 0;
 
         dos.write(changeByte(biSize), 0, 4);
-        dos.write(changeByte(biWidth), 0, 4);
-        dos.write(changeByte(biHeight), 0, 4);
+        dos.write(changeByte(nWidth), 0, 4);
+        dos.write(changeByte(nHeight), 0, 4);
         dos.write(changeByte(biPlanes), 0, 2);
         dos.write(changeByte(biBitcount), 0, 2);
         dos.write(changeByte(biCompression), 0, 4);
@@ -354,7 +345,6 @@ public class Controller implements Initializable {
         try {        //wait for thread stopping
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         if (0 != mhDB) {

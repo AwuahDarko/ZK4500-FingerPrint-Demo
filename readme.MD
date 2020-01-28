@@ -13,7 +13,10 @@ Name => varchar(45)
 temp1 => longtext
 temp2 => longtext
 
-You need ZK4500 fingerprint scanner or equivalent
+You need ZK4500 fingerprint scanner or equivalent.
+Fingerprint SDK is in deps folder in the project.
+Java 8 is used.
+Framework is JavaFX 8
 
 
 
